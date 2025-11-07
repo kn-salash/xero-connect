@@ -1,0 +1,51 @@
+{
+  "name": "xero-connect",
+  "version": "1.0.0",
+  "description": "React application to connect with Xero accounting software",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "react-scripts": "5.0.1",
+    "xero-node": "^4.30.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server/index.js",
+    "server:https": "node server/index-https.js",
+    "dev": "concurrently \"npm run server\" \"npm start\"",
+    "dev:https": "concurrently \"npm run server:https\" \"cross-env HTTPS=true npm start\"",
+    "generate-cert": "node scripts/generate-cert.js"
+  },
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^10.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

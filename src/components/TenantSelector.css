@@ -1,0 +1,118 @@
+.tenant-selector-card {
+  margin-bottom: 20px;
+}
+
+.tenant-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #eee;
+}
+
+.tenant-selector-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.tenant-count {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tenant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tenant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: #fff;
+}
+
+.tenant-item:hover {
+  border-color: #13B5EA;
+  background-color: #f8f9fa;
+}
+
+.tenant-item.active {
+  border-color: #13B5EA;
+  background-color: #e7f5f9;
+}
+
+.tenant-info {
+  flex: 1;
+}
+
+.tenant-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.tenant-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 12px;
+  color: #666;
+}
+
+.tenant-id {
+  font-family: monospace;
+}
+
+.tenant-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.active-badge {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.tenant-selector-footer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.tenant-selector-footer .btn {
+  text-decoration: none;
+  display: inline-block;
+}
+
