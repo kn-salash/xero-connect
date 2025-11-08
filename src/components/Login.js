@@ -12,7 +12,13 @@ const Login = () => {
     // Check for error in URL (from callback)
     const urlError = searchParams.get('error');
     if (urlError) {
-      setError(decodeURIComponent(urlError));
+      try {
+        const decoded = decodeURIComponent(urlError);
+        // Ensure it's a string, not an object
+        setError(typeof decoded === 'string' ? decoded : String(decoded));
+      } catch (e) {
+        setError('An error occurred');
+      }
     }
   }, [searchParams]);
 
@@ -31,18 +37,66 @@ const Login = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
+      let errorMessage = 'Failed to initiate login. Please check your server configuration.';
+      
       if (err.code === 'ECONNREFUSED') {
-        setError('Connection refused. Please make sure the backend server is running on port 5000. Run: npm run server');
+        errorMessage = 'Connection refused. Please make sure the backend server is running on port 5000. Run: npm run server';
       } else if (err.response) {
         // Server responded with error
-        const errorMsg = err.response.data?.error || err.response.data?.details || err.response.statusText;
-        const details = err.response.data?.details ? ` (${err.response.data.details})` : '';
-        setError(`Server error: ${errorMsg}${details}`);
+        const errorData = err.response.data || {};
+        let errorMsg = '';
+        let detailsMsg = '';
+        
+        // Safely extract error message
+        if (typeof errorData === 'string') {
+          errorMsg = errorData;
+        } else if (errorData && typeof errorData === 'object') {
+          if (errorData.error) {
+            if (typeof errorData.error === 'string') {
+              errorMsg = errorData.error;
+            } else {
+              try {
+                errorMsg = JSON.stringify(errorData.error);
+              } catch (e) {
+                errorMsg = 'Unknown error';
+              }
+            }
+          }
+          
+          if (errorData.details) {
+            if (typeof errorData.details === 'string') {
+              detailsMsg = ` (${errorData.details})`;
+            } else {
+              try {
+                detailsMsg = ` (${JSON.stringify(errorData.details)})`;
+              } catch (e) {
+                // Ignore details if can't stringify
+              }
+            }
+          }
+          
+          // If no error message found, try to stringify the whole object
+          if (!errorMsg && Object.keys(errorData).length > 0) {
+            try {
+              errorMsg = JSON.stringify(errorData);
+            } catch (e) {
+              errorMsg = 'Server returned an error';
+            }
+          }
+        }
+        
+        if (!errorMsg) {
+          errorMsg = err.response.statusText || 'Server error';
+        }
+        
+        errorMessage = `Server error: ${errorMsg}${detailsMsg}`;
       } else if (err.request) {
-        setError('No response from server. Please check if the backend is running on port 5000.');
-      } else {
-        setError(err.message || 'Failed to initiate login. Please check your server configuration.');
+        errorMessage = 'No response from server. Please check if the backend is running on port 5000.';
+      } else if (err.message) {
+        errorMessage = typeof err.message === 'string' ? err.message : JSON.stringify(err.message);
       }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -57,7 +111,7 @@ const Login = () => {
         
         {error && (
           <div className="error-message">
-            {error}
+            {typeof error === 'string' ? error : String(error)}
           </div>
         )}
 

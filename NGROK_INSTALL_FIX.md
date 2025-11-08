@@ -32,20 +32,6 @@ Windows Defender is blocking ngrok download/extraction.
    $env:Path += ";C:\tools\ngrok"
    ```
 
-### Option 3: Use Cloudflare Tunnel (Alternative)
-
-Cloudflare Tunnel works similarly to ngrok:
-
-```powershell
-# Install cloudflared
-scoop install cloudflared
-
-# Start tunnel (similar to ngrok)
-cloudflared tunnel --url http://localhost:3000
-```
-
-Then use the HTTPS URL it provides!
-
 ---
 
 ## After Installation

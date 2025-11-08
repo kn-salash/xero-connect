@@ -1,26 +1,48 @@
 // Token storage adapter for Vercel serverless functions
-// Note: In production, use Vercel KV, Supabase, or another database
-// This is a temporary in-memory solution (tokens will be lost on cold start)
+// Uses JSON file storage in /tmp directory (persists across function invocations)
+// Note: For production, consider Vercel KV, Supabase, or a database for better persistence
 
-let tokenStore = { tenants: [] };
+const fs = require('fs');
+const path = require('path');
 
-// For Vercel, we should use Vercel KV or a database
-// This is a placeholder that needs to be replaced
+// Use /tmp directory which persists across Vercel function invocations
+const TOKEN_FILE_PATH = path.join('/tmp', 'xero-tokens.json');
+
+// In-memory cache for faster access
+let tokenStoreCache = null;
+
 function readTokens() {
   try {
-    // TODO: Replace with Vercel KV or database call
-    // For now, return in-memory store
-    return tokenStore;
+    // Return cached version if available
+    if (tokenStoreCache !== null) {
+      return tokenStoreCache;
+    }
+
+    // Try to read from file
+    if (fs.existsSync(TOKEN_FILE_PATH)) {
+      const fileContent = fs.readFileSync(TOKEN_FILE_PATH, 'utf8');
+      tokenStoreCache = JSON.parse(fileContent);
+      return tokenStoreCache;
+    }
+
+    // Return empty store if file doesn't exist
+    tokenStoreCache = { tenants: [] };
+    return tokenStoreCache;
   } catch (error) {
     console.error('Error reading tokens:', error);
-    return { tenants: [] };
+    // Return empty store on error
+    tokenStoreCache = { tenants: [] };
+    return tokenStoreCache;
   }
 }
 
 function writeTokens(data) {
   try {
-    // TODO: Replace with Vercel KV or database call
-    tokenStore = data;
+    // Update cache
+    tokenStoreCache = data;
+    
+    // Write to JSON file
+    fs.writeFileSync(TOKEN_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (error) {
     console.error('Error writing tokens:', error);

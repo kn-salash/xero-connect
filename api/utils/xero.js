@@ -1,5 +1,5 @@
 const { XeroClient } = require('xero-node');
-const tokenStorage = require('./utils/tokenStorage');
+const tokenStorage = require('./tokenStorage');
 
 // Initialize Xero Client
 function getXeroClient() {
@@ -8,7 +8,7 @@ function getXeroClient() {
     clientSecret: process.env.XERO_CLIENT_SECRET,
     redirectUris: [
       process.env.XERO_REDIRECT_URI || 
-      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/callback` : 'http://localhost:3000/callback'
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/xero/callback` : 'http://localhost:3000/callback')
     ],
     scopes: 'openid profile email accounting.settings accounting.transactions accounting.contacts.read offline_access'.split(' ')
   });

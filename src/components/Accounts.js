@@ -33,7 +33,18 @@ const Accounts = ({ tenantId }) => {
         setAccounts(response.data.accounts);
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to fetch accounts. Please try again.');
+      let errorMsg = 'Failed to fetch accounts. Please try again.';
+      if (err.response?.data) {
+        const errorData = err.response.data;
+        if (typeof errorData === 'string') {
+          errorMsg = errorData;
+        } else if (errorData.error) {
+          errorMsg = typeof errorData.error === 'string' ? errorData.error : JSON.stringify(errorData.error);
+        } else if (typeof errorData === 'object') {
+          errorMsg = JSON.stringify(errorData);
+        }
+      }
+      setError(errorMsg);
       console.error('Error fetching accounts:', err);
     } finally {
       setLoading(false);
@@ -94,7 +105,7 @@ const Accounts = ({ tenantId }) => {
 
         {error && (
           <div className="error">
-            {error}
+            {typeof error === 'string' ? error : String(error)}
           </div>
         )}
 

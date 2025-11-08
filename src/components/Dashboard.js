@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
+import Navigation from './Navigation';
+import Home from './Home';
 import Accounts from './Accounts';
+import Contacts from './Contacts';
 import TenantSelector from './TenantSelector';
 import './Dashboard.css';
 
 const Dashboard = ({ setIsAuthenticated, tenants, setTenants }) => {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedTenantId, setSelectedTenantId] = useState(null);
 
@@ -17,7 +20,6 @@ const Dashboard = ({ setIsAuthenticated, tenants, setTenants }) => {
   }, [tenants, selectedTenantId]);
 
   const handleLogout = async () => {
-    setLoading(true);
     try {
       await axios.post('/api/xero/logout', {}, {
         withCredentials: true,
@@ -28,8 +30,6 @@ const Dashboard = ({ setIsAuthenticated, tenants, setTenants }) => {
     } catch (err) {
       setError('Failed to logout');
       console.error('Logout error:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -67,24 +67,17 @@ const Dashboard = ({ setIsAuthenticated, tenants, setTenants }) => {
 
   return (
     <div className="dashboard-container">
+      <Navigation 
+        onLogout={handleLogout}
+        tenants={tenants}
+        selectedTenantId={selectedTenantId}
+        onSelectTenant={setSelectedTenantId}
+      />
+      
       <div className="container">
-        <div className="header">
-          <div>
-            <h1>Xero Dashboard</h1>
-            <p>Manage your Xero accounting data</p>
-          </div>
-          <button 
-            className="btn btn-secondary"
-            onClick={handleLogout}
-            disabled={loading}
-          >
-            {loading ? 'Logging out...' : 'Logout'}
-          </button>
-        </div>
-
         {error && (
           <div className="error">
-            {error}
+            {typeof error === 'string' ? error : String(error)}
           </div>
         )}
 
@@ -97,13 +90,24 @@ const Dashboard = ({ setIsAuthenticated, tenants, setTenants }) => {
           />
         )}
 
-        {selectedTenantId && (
-          <Accounts tenantId={selectedTenantId} />
-        )}
-
         {tenants && tenants.length === 0 && (
           <div className="card">
             <p>No tenants connected. Please connect a Xero organization.</p>
+          </div>
+        )}
+
+        {selectedTenantId && (
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
+            <Route path="/home" element={<Home tenantId={selectedTenantId} />} />
+            <Route path="/accounts" element={<Accounts tenantId={selectedTenantId} />} />
+            <Route path="/contacts" element={<Contacts tenantId={selectedTenantId} />} />
+          </Routes>
+        )}
+
+        {!selectedTenantId && tenants.length > 0 && (
+          <div className="card">
+            <p>Please select a tenant to view data.</p>
           </div>
         )}
       </div>

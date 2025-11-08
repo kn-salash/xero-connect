@@ -1,4 +1,4 @@
-const { tokenStorage } = require('./utils/xero');
+const { tokenStorage } = require('../../utils/xero');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);

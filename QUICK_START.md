@@ -39,7 +39,6 @@ Test-NetConnection -ComputerName localhost -Port 3000 -InformationLevel Quiet
 
 Once servers are running:
 - Local: http://localhost:3000
-- Cloudflare Tunnel: https://myers-professional-develops-ted.trycloudflare.com
 
 ## Stop Servers
 

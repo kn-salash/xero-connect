@@ -20,6 +20,11 @@ function App() {
         credentials: 'include',
         signal: AbortSignal.timeout(5000) // Reduced timeout
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       setIsAuthenticated(data.authenticated || false);
       setTenants(data.tenants || []);
@@ -55,7 +60,7 @@ function App() {
             element={<Callback setIsAuthenticated={setIsAuthenticated} setTenants={setTenants} />} 
           />
           <Route 
-            path="/dashboard" 
+            path="/dashboard/*" 
             element={
               isAuthenticated ? (
                 <Dashboard 

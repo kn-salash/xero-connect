@@ -1,13 +1,5 @@
 # PowerShell Commands Reference
 
-## Starting Cloudflare Tunnel
-
-Open a **NEW PowerShell terminal** and run:
-
-```powershell
-cloudflared tunnel --url http://localhost:3000
-```
-
 ## Starting Backend Server
 
 In your project directory:
